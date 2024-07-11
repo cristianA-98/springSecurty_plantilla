@@ -1,11 +1,10 @@
 package com.example.spring.Config;
 
 
-import com.example.spring.Config.Jwt.JwtAuthenticationFilter;
+import com.example.spring.Utils.Jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,17 +24,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity htpp) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity htpp) throws Exception {
 
         htpp.
-                csrf(x->x.disable())
-                .authorizeHttpRequests(auth->
+                csrf(x -> x.disable())
+                .authorizeHttpRequests(auth ->
                         auth.antMatchers("/auth/**").permitAll().anyRequest().authenticated())
-                .sessionManagement(session->
+                .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
 
 
         return htpp.build();

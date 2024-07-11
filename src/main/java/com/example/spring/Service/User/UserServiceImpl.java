@@ -1,11 +1,13 @@
 package com.example.spring.Service.User;
 
 
-import com.example.spring.Config.Jwt.JwtService;
 import com.example.spring.Persistence.Entity.User;
+import com.example.spring.Persistence.Model.Dto.ExeptionResponse;
 import com.example.spring.Persistence.Model.Dto.JwtResponse;
 import com.example.spring.Persistence.Model.Dto.UserDto;
 import com.example.spring.Persistence.Repository.UserRepository;
+import com.example.spring.Utils.Jwt.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl  implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
@@ -29,21 +31,21 @@ public class UserServiceImpl  implements UserService {
 
     public JwtResponse authentication(UserDto userDto) {
 
-     Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                userDto.getEmail(),userDto.getPassword()
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                userDto.getEmail(), userDto.getPassword()
         ));
 
 
         return JwtResponse.builder()
-                .jwt( jwtService.getToken(authentication.getName()))
+                .jwt(jwtService.getToken(authentication.getName()))
                 .build();
     }
 
 
+    public JwtResponse register(UserDto userDto) {
 
-    public JwtResponse register (UserDto userDto){
-
-        if(userRepository.findByEmail(userDto.getEmail()).isPresent())   return JwtResponse.builder().jwt( "Email in Used").build();
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent())
+            throw new ExeptionResponse("Email in used", HttpStatus.NOT_ACCEPTABLE, "error");
 
         userRepository.save(
                 User.builder()
@@ -54,7 +56,7 @@ public class UserServiceImpl  implements UserService {
         );
 
         return JwtResponse.builder()
-                .jwt( jwtService.getToken(userDto.getEmail()))
+                .jwt(jwtService.getToken(userDto.getEmail()))
                 .build();
     }
 

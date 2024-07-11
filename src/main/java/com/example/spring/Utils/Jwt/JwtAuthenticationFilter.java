@@ -1,4 +1,4 @@
-package com.example.spring.Jwt;
+package com.example.spring.Utils.Jwt;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

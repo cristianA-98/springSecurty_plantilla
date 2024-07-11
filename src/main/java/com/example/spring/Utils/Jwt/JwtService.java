@@ -1,4 +1,4 @@
-package com.example.spring.Jwt;
+package com.example.spring.Utils.Jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

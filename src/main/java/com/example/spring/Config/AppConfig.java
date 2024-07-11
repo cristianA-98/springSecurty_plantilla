@@ -1,14 +1,15 @@
 package com.example.spring.Config;
 
+import com.example.spring.Persistence.Model.Dto.ExeptionResponse;
 import com.example.spring.Persistence.Repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -22,12 +23,12 @@ public class AppConfig {
 
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByEmail(username).orElseThrow((() -> new UsernameNotFoundException("Email not found..")));
+    public UserDetailsService userDetailsService() {
+        return username -> userRepository.findByEmail(username).orElseThrow((() -> new ExeptionResponse("Email not found", HttpStatus.NOT_FOUND, "Error")));
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider dao = new DaoAuthenticationProvider();
         dao.setUserDetailsService(userDetailsService());
         dao.setPasswordEncoder(passwordEncoder());
@@ -42,7 +43,7 @@ public class AppConfig {
 
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
